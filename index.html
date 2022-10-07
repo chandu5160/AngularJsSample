@@ -1,46 +1,104 @@
-﻿<!DOCTYPE html>
-<html ng-app="app">
+<!DOCTYPE html>
+<html ng-app="App">
 <head>
-    <meta charset="utf-8" />
-    <title>AngularJS User Registration and Login Example</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
-    <link href="app-content/app.css" rel="stylesheet" />
+  <title>angular-example-basic-form</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-messages.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-mocks.js"></script>
+  <script src="fake-server.js"></script>
+  <script src="script.js"></script>
+
 </head>
-<body>
-    <div class="jumbotron">
-        <div class="container">
-            <div class="col-sm-8 col-sm-offset-2">
-                <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
-                <div ng-view></div>
-            </div>
-        </div>
-    </div>
-    <div class="credits text-center">
-        <p>
-            <a href="http://jasonwatmore.com/post/2015/03/10/angularjs-user-registration-and-login-example-tutorial">AngularJS User Registration and Login Example</a>
-        </p>
-        <p>
-            <a href="http://jasonwatmore.com">JasonWatmore.com</a>
-        </p>
-    </div>
+<body ng-controller="LoginController">
+<h1>angular-example-basic-form</h1>
+<form autocomplete="off" novalidate
+  name="userForm" 
+  ng-submit="userForm.$valid && submit(user, userForm)"
+  ng-disabled="loading"
+>
+  <fieldset>
+    <legend>
+      <label>
+        Sign Up Free
+      </label>
+    </legend>
+    
+    <p>
+      <label>
+        Email:
+        <input type="email" 
+          name="userEmail"
+          ng-model="user.email"
+          ng-model-options="{
+            updateOn: 'default blur',
+            debounce: {
+              'default': 500,
+              'blur': 0
+            }
+          }"
+          unique-email
+          autofocus
+          required>
+        <small ng-show="userForm.userEmail.$pending.uniqueEmail">Valliding Email...</small>
+      </label>
+      <div ng-if="userForm.$submitted && userForm.userEmail.$touched"
+           ng-messages="userForm.userEmail.$error"
+           ng-messages-multiple>
+        <div ng-message="required">You did not enter your email address</div>
+        <div ng-message="email">You did not enter a valid email address</div>
+        <div ng-message="uniqueEmail">Your email address is already taken</div>
+      </div>
+    </p>
 
-    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="//code.angularjs.org/1.6.0/angular.min.js"></script>
-    <script src="//code.angularjs.org/1.6.0/angular-route.min.js"></script>
-    <script src="//code.angularjs.org/1.6.0/angular-cookies.min.js"></script>
+    <p>
+      <label>
+        Password:
+        <input type="password"
+          name="userPassword"
+          ng-model="user.password"
+          ng-minlength="6"
+          validate-password-characters
+          required>
+      </label>
+      <div ng-if="userForm.$submitted && userForm.userPassword.$touched"
+           ng-messages="userForm.userPassword.$error"
+           ng-messages-multiple>
+        <div ng-message="required">You did not enter your password</div>
+        <div ng-message="minlength">Your password is too short</div>
+        <div ng-message="passwordCharacters">Please use valid password characters</div>
+      </div>
+    </p>
+      
+    <p>
+      <label>
+        Confirm Password:
+        <input type="password"
+          name="confirmPassword" 
+          ng-model="confirmPassword"
+          match-password="userPassword"
+          validate-password-characters
+          required>
+      </label>
+      <div ng-if="userForm.$submitted && userForm.confirmPassword.$touched"
+           ng-messages="userForm.confirmPassword.$error"
+           ng-messages-multiple>
+        <div ng-message="required">You did not enter a confirmation password</div>
+        <div ng-message="passwordMatch">Your two passwords did not match</div>
+      </div>
+    </p>
+    
+    <button type="submit" ng-disabled="loading">
+      Signup
+    </button>
+    <input type="reset" ng-click="reset(userForm)" value="Reset">
+      
+  </fieldset>
+</form>
+<br>
+<center>		
+  Example Built by <a href="https://twitter.com/gdi2290">@gdi2290</a>		
+</center>		
+<a href="https://github.com/gdi2290/angular-example-basic-form"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
 
-    <script src="app.js"></script>
-    <script src="app-services/authentication.service.js"></script>
-    <script src="app-services/flash.service.js"></script>
-
-    <!-- Real user service that uses an api -->
-    <!-- <script src="app-services/user.service.js"></script> -->
-
-    <!-- Fake user service for demo that uses local storage -->
-    <script src="app-services/user.service.local-storage.js"></script>
-
-    <script src="home/home.controller.js"></script>
-    <script src="login/login.controller.js"></script>
-    <script src="register/register.controller.js"></script>
 </body>
 </html>
