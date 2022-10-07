@@ -3,9 +3,11 @@ node {
     checkout scm
   }
   stage('SonarQube Analysis') {
-    def mvn = tool 'Default Maven';
+    def scannerHome = tool 'SonarScanner for MSBuild'
     withSonarQubeEnv() {
-      sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=AngularJs"
+      bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin /k:\"AngularJs\""
+      bat "dotnet build"
+      bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll end"
     }
   }
 }
